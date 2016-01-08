@@ -32,18 +32,33 @@ export default class EntitySchema {
     }
     return this;
   }
-  
+
   hasOne(association, key = association.getKey()) {
     this.define({
       [key]: association
     });
     return this;
   }
-  
+
+  belongsTo(association, key = this.getKey()) {
+    association.define({
+      [key]: this,
+    });
+    return this;
+  }
+
   hasMany(association, key = association.getKey()) {
     this.define({
       [key]: arrayOf(association)
     });
+    return this;
+  }
+
+  hasAndBelongsToMany(association, key = association.getKey()) {
+    // to avoid (nearly) infinite association nesting
+    const _this = Object.assign({}, this);
+    this.hasMany(association, key);
+    association.hasMany(_this, this.getKey());
     return this;
   }
 }
