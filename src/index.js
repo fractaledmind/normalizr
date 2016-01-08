@@ -90,6 +90,28 @@ function visitEntity(entity, entitySchema, bag, options) {
   return id;
 }
 
+function mapHasAndBelongsToMany(schema) {
+  const entitySchema = schema.getItemSchema() || schema;
+  const entityKey = entitySchema.getKey();
+  for (let association of entitySchema.getAssociations()) {
+    const associatedEntity = entitySchema[association].getItemSchema() || entitySchema[association];
+    const associatedEntityKey = associatedEntity.getKey();
+    // ensure double-bound entities link to each other
+    if (associatedEntity.hasOwnProperty(entityKey) && entitySchema.hasOwnProperty(associatedEntityKey)) {
+      for (let pid of Object.keys(bag[entityKey])) {
+        bag[entityKey][pid][associatedEntityKey].forEach(cid => {
+          const child = bag[associatedEntityKey][cid];
+          if (child.hasOwnProperty(entityKey)) {
+            child[entityKey].push(Number(pid));
+          } else {
+            child[entityKey] = [Number(pid)];
+          }
+        });
+      };
+    }
+  }
+}
+
 function visit(obj, schema, bag, options) {
   if (!isObject(obj) || !isObject(schema)) {
     return obj;
@@ -134,7 +156,7 @@ export function normalize(obj, schema, options = {}) {
   let result = visit(obj, schema, bag, options);
 
   return {
-    entities: bag,
+    entities: mapHasAndBelongsToMany(schema, bag),,
     result
   };
 }
