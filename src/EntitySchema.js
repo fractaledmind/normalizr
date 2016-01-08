@@ -24,6 +24,10 @@ export default class EntitySchema {
     return this._getId(entity);
   }
 
+  getAssociations() {
+    return Object.keys(this).filter(k => !k.startsWith('_'));
+  }
+
   define(nestedSchema) {
     for (let key in nestedSchema) {
       if (nestedSchema.hasOwnProperty(key)) {
