@@ -12,6 +12,7 @@ export default class EntitySchema {
     this._template = options.template || {};
   }
 
+  // GETTERS
   getKey() {
     return this._key;
   }
@@ -28,6 +29,7 @@ export default class EntitySchema {
     return Object.keys(this).filter(k => !k.startsWith('_'));
   }
 
+  // ASSOCIATIONS
   define(nestedSchema) {
     for (let key in nestedSchema) {
       if (nestedSchema.hasOwnProperty(key)) {
