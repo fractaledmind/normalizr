@@ -8,10 +8,16 @@ export default class EntitySchema {
 
     const idAttribute = options.idAttribute || 'id';
     this._getId = typeof idAttribute === 'function' ? idAttribute : x => x[idAttribute];
+
+    this._template = options.template || {};
   }
 
   getKey() {
     return this._key;
+  }
+
+  getTemplate() {
+    return this._template;
   }
 
   getId(entity) {
