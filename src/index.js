@@ -156,7 +156,7 @@ export function normalize(obj, schema, options = {}) {
   let result = visit(obj, schema, bag, options);
 
   return {
-    entities: mapHasAndBelongsToMany(schema, bag),,
+    entities: mapHasAndBelongsToMany(schema, bag),
     result
   };
 }
