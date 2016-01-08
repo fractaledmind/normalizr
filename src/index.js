@@ -74,18 +74,18 @@ function visitEntity(entity, entitySchema, bag, options) {
 
   const entityKey = entitySchema.getKey();
   const id = entitySchema.getId(entity);
+  const template = entitySchema.getTemplate();
 
   if (!bag.hasOwnProperty(entityKey)) {
     bag[entityKey] = {};
   }
 
   if (!bag[entityKey].hasOwnProperty(id)) {
-    bag[entityKey][id] = {};
+    bag[entityKey][id] = template;
   }
 
-  let stored = bag[entityKey][id];
   let normalized = visitObject(entity, entitySchema, bag, options);
-  mergeIntoEntity(stored, normalized, entityKey);
+  bag[entityKey][id] = Object.assign({}, bag[entityKey][id], normalized);
 
   return id;
 }
